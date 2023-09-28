@@ -1,4 +1,5 @@
 from pathlib import Path
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'graphene_django',
+    'serious_django_graphene',
 ]
 
 MIDDLEWARE = [
@@ -115,3 +119,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User model
 AUTH_USER_MODEL = "accounts.User"
+
+# Graphene Schema
+GRAPHENE = {
+    "SCHEMA": "server.schema.schema",  # Where your Graphene schema lives
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+
+JWT_EXPIRATION_DELTA = datetime.timedelta(days=1)
+JWT_ALGORITHM = "HS256"
+
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+GRAPHQL_JWT = {
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=12),
+    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=7),
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+}
