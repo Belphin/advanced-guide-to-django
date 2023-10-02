@@ -11,18 +11,9 @@ class UserType(DjangoObjectType):
         model = User
 
 
-class UserPaginatedType(graphene.ObjectType):
-    page = graphene.Int()
-    pages = graphene.Int()
-    has_next = graphene.Boolean()
-    has_prev = graphene.Boolean()
-    objects = graphene.List(UserType)
-
-
 class Query:
     users = graphene.List(UserType)
     user = graphene.Field(UserType, id=graphene.ID())
-    paginated_users = graphene.Field(UserPaginatedType, page=graphene.Int())
 
     def resolve_users(self, info):
         return User.objects.all()
