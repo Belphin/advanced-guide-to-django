@@ -1,6 +1,6 @@
 import graphene
-from django.shortcuts import get_object_or_404
 
+from django.shortcuts import get_object_or_404
 from graphene_django.types import DjangoObjectType
 
 from .models import User
