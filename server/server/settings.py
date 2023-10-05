@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
     'graphene_django',
     'serious_django_graphene',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -41,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -142,3 +144,5 @@ GRAPHQL_JWT = {
     "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=7),
     "JWT_AUTH_HEADER_PREFIX": "Bearer",
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
