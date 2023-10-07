@@ -2,25 +2,53 @@ import React from "react";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Button, Card, Input } from "antd";
 import { Container, FormGroup, Form, FormLabel } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import "./styles.css";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "api/mutation";
+import { AuthActionCreators } from "store/reducers/auth/action-creators";
+import { useDispatch } from "react-redux";
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
 }
 
 const Login = () => {
+  const [loginMutation, { loading, error }] = useMutation(LOGIN);
+
+  const dispatch = useDispatch();
+  const router = useNavigate();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormData> = async (formData) => {
+    const response = await loginMutation({
+      variables: formData,
+    });
+    const { user, token, success, error } = response.data.login;
+    if (success) {
+      localStorage.setItem("token", token);
+      delete user.__typename;
+      dispatch(AuthActionCreators.setUser(user));
+      router(RouteNames.BOARDS);
+    } else {
+      if (error?.validationErrors[0]?.field === "__all__") {
+        const errorOptions = {
+          type: "manual",
+          message: "Please enter a correct email and password",
+        };
+        setError("username", errorOptions);
+        setError("password", errorOptions);
+      }
+    }
   };
 
   return (
@@ -30,19 +58,19 @@ const Login = () => {
           <FormGroup className="form-field">
             <FormLabel className="fw-semibold">Email</FormLabel>
             <Controller
-              name="email"
+              name="username"
               control={control}
               rules={{ required: "This field is required" }}
               render={({ field }) => (
                 <Input
-                  status={errors.email ? "error" : ""}
+                  status={errors.username ? "error" : ""}
                   type="text"
                   {...field}
                 />
               )}
             />
-            {errors.email && (
-              <div className="text-danger">{errors.email.message}</div>
+            {errors.username && (
+              <div className="text-danger">{errors.username.message}</div>
             )}
           </FormGroup>
           <FormGroup className="form-field">

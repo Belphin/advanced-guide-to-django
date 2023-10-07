@@ -11,7 +11,7 @@ export interface IRoute {
 export enum RouteNames {
   LOGIN = "/login",
   REGISTER = "/register",
-  BOARDS = "*",
+  BOARDS = "/",
 }
 
 export const publicRoutes: IRoute[] = [
@@ -20,4 +20,6 @@ export const publicRoutes: IRoute[] = [
   { path: RouteNames.BOARDS, element: Boards },
 ];
 
-export const privateRoutes: IRoute[] = [];
+export const privateRoutes: IRoute[] = [
+  { path: RouteNames.BOARDS, element: Boards },
+];

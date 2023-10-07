@@ -26,3 +26,7 @@ class UserRegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class TokenVerificationForm(forms.Form):
+    token = forms.CharField(max_length=255)
