@@ -1,0 +1,9 @@
+#navbar-login-button {
+  margin-right: 8px;
+}
+
+@media screen and (max-width: 575px) {
+  #navbar-login-button {
+    margin: 8px 0;
+  }
+}

@@ -3,6 +3,7 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { Button, Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { RouteNames } from "router";
+import "./styles.css";
 
 const NavBar: FC = () => {
   const { user, isAuth } = useTypedSelector((state) => state.auth);
@@ -27,13 +28,13 @@ const NavBar: FC = () => {
             </Nav>
           ) : (
             <Nav style={{ marginLeft: "auto" }}>
-              <Button variant="outline-secondary" href={RouteNames.LOGIN}>
+              <Button
+                id="navbar-login-button"
+                variant="outline-secondary"
+                href={RouteNames.LOGIN}>
                 Log in
               </Button>
-              <Button
-                variant="primary"
-                style={{ marginLeft: "8px" }}
-                href={RouteNames.REGISTER}>
+              <Button variant="primary" href={RouteNames.REGISTER}>
                 Sign up
               </Button>
             </Nav>
