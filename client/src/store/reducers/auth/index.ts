@@ -14,7 +14,7 @@ export default function authReducer(
     case AuthActionEnum.SET_AUTH:
       return { ...state, isAuth: action.payload };
     case AuthActionEnum.SET_USER:
-      return { ...state, user: action.payload, isAuth: true };
+      return { ...state, user: action.payload };
     default:
       return state;
   }

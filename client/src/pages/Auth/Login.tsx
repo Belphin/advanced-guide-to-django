@@ -8,8 +8,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import "./styles.css";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "api/mutation";
-import { AuthActionCreators } from "store/reducers/auth/action-creators";
-import { useDispatch } from "react-redux";
+import { useActions } from "hooks/useActions";
 
 interface FormData {
   username: string;
@@ -19,7 +18,7 @@ interface FormData {
 const Login = () => {
   const [loginMutation, { loading, error }] = useMutation(LOGIN);
 
-  const dispatch = useDispatch();
+  const { setUser, setIsAuth } = useActions();
   const router = useNavigate();
 
   const {
@@ -37,7 +36,8 @@ const Login = () => {
     if (success) {
       localStorage.setItem("token", token);
       delete user.__typename;
-      dispatch(AuthActionCreators.setUser(user));
+      setUser(user);
+      setIsAuth(true);
       router(RouteNames.BOARDS);
     } else {
       if (error?.validationErrors[0]?.field === "__all__") {
@@ -53,14 +53,16 @@ const Login = () => {
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
-      <Card title="Login Form" type="inner" style={{ width: "440px" }}>
+      <Card title="Login Form" type="inner" style={{ width: "500px" }}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup className="form-field">
             <FormLabel className="fw-semibold">Email</FormLabel>
             <Controller
               name="username"
               control={control}
-              rules={{ required: "This field is required" }}
+              rules={{
+                required: "This field is required",
+              }}
               render={({ field }) => (
                 <Input
                   status={errors.username ? "error" : ""}
@@ -78,7 +80,13 @@ const Login = () => {
             <Controller
               name="password"
               control={control}
-              rules={{ required: "This field is required" }}
+              rules={{
+                required: "This field is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long",
+                },
+              }}
               render={({ field }) => (
                 <Input.Password
                   {...field}
@@ -93,7 +101,7 @@ const Login = () => {
               <div className="text-danger">{errors.password.message}</div>
             )}
           </FormGroup>
-          <div className="mt-2 d-flex justify-content-between">
+          <div className="mt-3 d-flex justify-content-between">
             <div className="d-flex align-items-center">
               <div style={{ marginRight: "4px" }}>No account?</div>
               <Link to={RouteNames.REGISTER}>Register</Link>
