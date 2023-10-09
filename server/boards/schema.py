@@ -1,4 +1,5 @@
 import graphene
+from django.core.paginator import Paginator
 from graphene_django.types import DjangoObjectType
 from django.db.models import Count
 from graphql import GraphQLError
@@ -15,6 +16,11 @@ class BoardType(DjangoObjectType):
     def resolve_topicsCount(self, info):
         return self.topics_count
 
+class BoardListType(graphene.ObjectType):
+    items = graphene.List(BoardType)
+    total_elements = graphene.Int()
+    total_pages = graphene.Int()
+
 
 class TopicType(DjangoObjectType):
     class Meta:
@@ -27,7 +33,7 @@ class PostType(DjangoObjectType):
 
 
 class Query:
-    boards = graphene.List(BoardType, page=graphene.Int(), per_page=graphene.Int())
+    boards = graphene.Field(BoardListType, page=graphene.Int(), per_page=graphene.Int())
     topics = graphene.List(TopicType, page=graphene.Int(), per_page=graphene.Int(), board_id=graphene.Int())
     # posts = graphene.List(PostType, page=graphene.Int(), per_page=graphene.Int(), topic_id=graphene.Int())
 
@@ -35,10 +41,17 @@ class Query:
         try:
             queryset = Board.objects.annotate(topics_count=Count('topics'))
 
-            if per_page:
-                queryset = queryset[(page - 1) * per_page:page * per_page]
+            paginator = Paginator(queryset, per_page) if per_page else None
 
-            return queryset
+            total_elements = paginator.count if per_page else queryset.count()
+            total_pages = paginator.num_pages if per_page else 1
+
+            if page > total_pages:
+                items = []
+            else:
+                items = paginator.get_page(page) if per_page else queryset
+
+            return {"items": list(items), "total_elements": total_elements, "total_pages": total_pages}
         except Exception as e:
             raise GraphQLError("Boards fetch failed!")
 

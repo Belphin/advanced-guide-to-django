@@ -4,15 +4,22 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { Button, Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { RouteNames } from "router";
 import "./styles.css";
+import { goToRoute } from "utils/goToRoute";
+import { useNavigate } from "react-router-dom";
 
 const NavBar: FC = () => {
+  const router = useNavigate();
   const { user, isAuth } = useTypedSelector((state) => state.auth);
   const { logout } = useActions();
 
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
       <Container>
-        <Navbar.Brand href={RouteNames.BOARDS}>Django Boards</Navbar.Brand>
+        <Navbar.Brand
+          style={{ cursor: "pointer" }}
+          onClick={goToRoute(RouteNames.BOARDS, router)}>
+          Django Boards
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="mainMenu" />
         <Navbar.Collapse id="mainMenu">
           {isAuth ? (

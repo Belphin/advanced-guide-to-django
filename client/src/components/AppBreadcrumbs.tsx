@@ -8,7 +8,10 @@ const excludedRoutes: string[] = [RouteNames.LOGIN, RouteNames.REGISTER];
 
 const AppBreadcrumbs: FC = () => {
   const { pathname } = useLocation();
+  const parts = pathname.split("/");
   const router = useNavigate();
+
+  const boardName = parts[1];
 
   if (excludedRoutes.includes(pathname)) return null;
 
@@ -20,6 +23,13 @@ const AppBreadcrumbs: FC = () => {
           onClick={goToRoute(RouteNames.BOARDS, router)}>
           Boards
         </Breadcrumb.Item>
+        {boardName && (
+          <Breadcrumb.Item
+            active={parts.length === 2}
+            onClick={goToRoute(boardName, router)}>
+            {boardName}
+          </Breadcrumb.Item>
+        )}
       </Breadcrumb>
     </Card>
   );

@@ -9,7 +9,6 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { useActions } from "hooks/useActions";
 import { useNavigate } from "react-router-dom";
 import { goToRoute } from "utils/goToRoute";
-import { RouteNames } from "router";
 
 const Boards: FC = () => {
   const router = useNavigate();
@@ -55,15 +54,10 @@ const Boards: FC = () => {
           </tr>
         </thead>
         <tbody>
-          {boardsData?.boards?.map((board: IBoard) => (
+          {boardsData?.boards?.items?.map((board: IBoard) => (
             <tr key={board.id}>
               <td>
-                <a
-                  href="/adf"
-                  onClick={goToRoute(
-                    `${RouteNames.BOARD_TOPICS}/${board.id}`,
-                    router
-                  )}>
+                <a href="#" onClick={goToRoute(board.name, router)}>
                   {board.name}
                 </a>
                 <small className="text-muted d-block">
@@ -94,7 +88,7 @@ const Boards: FC = () => {
       <Pagination
         showQuickJumper
         defaultCurrent={page}
-        total={500}
+        total={boardsData?.boards?.totalPages}
         onChange={onPageChange}
       />
     </>

@@ -12,7 +12,6 @@ export enum RouteNames {
   LOGIN = "/login",
   REGISTER = "/register",
   BOARDS = "/",
-  BOARD_TOPICS = "/board_topics",
 }
 
 export const publicRoutes: IRoute[] = [
