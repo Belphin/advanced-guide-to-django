@@ -3,9 +3,11 @@ import AppRouter from "components/AppRouter";
 import { useMutation } from "@apollo/client";
 import { VERIFY_TOKEN } from "api/mutation";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { AuthActionCreators } from "store/reducers/auth/action-creators";
 import NavBar from "components/NavBar";
 import { useActions } from "hooks/useActions";
+import "./styles.css";
+import AppBreadcrumbs from "components/AppBreadcrumbs";
+import { Container } from "react-bootstrap";
 
 function App() {
   const [verifyTokenMutation, { loading, error }] = useMutation(VERIFY_TOKEN);
@@ -31,7 +33,12 @@ function App() {
   return (
     <>
       <NavBar />
-      <AppRouter />
+      <div id="app-wrapper">
+        <Container>
+          <AppBreadcrumbs />
+          <AppRouter />
+        </Container>
+      </div>
     </>
   );
 }

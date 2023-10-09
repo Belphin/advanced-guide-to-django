@@ -1,0 +1,5 @@
+#app-wrapper {
+  background: url(assets/img/email-pattern.webp);
+  height: 100vh;
+  padding-top: 12px;
+}

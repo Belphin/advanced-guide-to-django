@@ -1,12 +1,19 @@
 import graphene
 from graphene_django.types import DjangoObjectType
+from django.db.models import Count
+from graphql import GraphQLError
 
 from .models import Board, Topic, Post
 
 
 class BoardType(DjangoObjectType):
+    topicsCount = graphene.Int()
+
     class Meta:
         model = Board
+        
+    def resolve_topicsCount(self, info):
+        return self.topics_count
 
 
 class TopicType(DjangoObjectType):
@@ -25,17 +32,23 @@ class Query:
     # posts = graphene.List(PostType, page=graphene.Int(), per_page=graphene.Int(), topic_id=graphene.Int())
 
     def resolve_boards(self, info, page=None, per_page=None):
-        queryset = Board.objects.all()
+        try:
+            queryset = Board.objects.annotate(topics_count=Count('topics'))
 
-        if per_page:
-            queryset = queryset[(page - 1) * per_page:page * per_page]
+            if per_page:
+                queryset = queryset[(page - 1) * per_page:page * per_page]
 
-        return queryset
+            return queryset
+        except Exception as e:
+            raise GraphQLError("Boards fetch failed!")
 
     def resolve_topics(self, info, page=None, per_page=None, board_id=None):
-        queryset = Topic.objects.filter(board__pk=board_id) if board_id else Topic.objects.all()
+        try:
+            queryset = Topic.objects.filter(board__pk=board_id) if board_id else Topic.objects.all()
 
-        if per_page:
-            queryset = queryset[(page - 1) * per_page:page * per_page]
+            if per_page:
+                queryset = queryset[(page - 1) * per_page:page * per_page]
 
-        return queryset
+            return queryset
+        except Exception as e:
+            raise GraphQLError("Topics fetch failed!")

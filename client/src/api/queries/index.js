@@ -8,3 +8,14 @@ export const GET_USER_ROLES = gql`
     }
   }
 `;
+
+export const GET_BOARDS = gql`
+  query ($page: Int, $perPage: Int) {
+    boards(page: $page, perPage: $perPage) {
+      id
+      name
+      description
+      topicsCount
+    }
+  }
+`;

@@ -11,7 +11,7 @@ const NavBar: FC = () => {
 
   return (
     <Navbar bg="dark" variant="dark" expand="sm">
-      <Container fluid>
+      <Container>
         <Navbar.Brand href={RouteNames.BOARDS}>Django Boards</Navbar.Brand>
         <Navbar.Toggle aria-controls="mainMenu" />
         <Navbar.Collapse id="mainMenu">

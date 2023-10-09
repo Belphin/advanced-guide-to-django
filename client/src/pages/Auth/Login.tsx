@@ -1,6 +1,6 @@
 import React from "react";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Card, Input } from "antd";
+import { Button, Card, Input, Spin } from "antd";
 import { Container, FormGroup, Form, FormLabel } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "router";
@@ -53,65 +53,67 @@ const Login = () => {
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
-      <Card title="Login Form" type="inner" style={{ width: "500px" }}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <FormGroup className="form-field">
-            <FormLabel className="fw-semibold">Email</FormLabel>
-            <Controller
-              name="username"
-              control={control}
-              rules={{
-                required: "This field is required",
-              }}
-              render={({ field }) => (
-                <Input
-                  status={errors.username ? "error" : ""}
-                  type="text"
-                  {...field}
-                />
+      <Spin spinning={loading} size="large">
+        <Card title="Login Form" type="inner" style={{ width: "500px" }}>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <FormGroup className="form-field">
+              <FormLabel className="fw-semibold">Email</FormLabel>
+              <Controller
+                name="username"
+                control={control}
+                rules={{
+                  required: "This field is required",
+                }}
+                render={({ field }) => (
+                  <Input
+                    status={errors.username ? "error" : ""}
+                    type="text"
+                    {...field}
+                  />
+                )}
+              />
+              {errors.username && (
+                <div className="text-danger">{errors.username.message}</div>
               )}
-            />
-            {errors.username && (
-              <div className="text-danger">{errors.username.message}</div>
-            )}
-          </FormGroup>
-          <FormGroup className="form-field">
-            <FormLabel className="fw-semibold">Password</FormLabel>
-            <Controller
-              name="password"
-              control={control}
-              rules={{
-                required: "This field is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters long",
-                },
-              }}
-              render={({ field }) => (
-                <Input.Password
-                  {...field}
-                  status={errors.password ? "error" : ""}
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                />
+            </FormGroup>
+            <FormGroup className="form-field">
+              <FormLabel className="fw-semibold">Password</FormLabel>
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: "This field is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input.Password
+                    {...field}
+                    status={errors.password ? "error" : ""}
+                    iconRender={(visible) =>
+                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    }
+                  />
+                )}
+              />
+              {errors.password && (
+                <div className="text-danger">{errors.password.message}</div>
               )}
-            />
-            {errors.password && (
-              <div className="text-danger">{errors.password.message}</div>
-            )}
-          </FormGroup>
-          <div className="mt-3 d-flex justify-content-between">
-            <div className="d-flex align-items-center">
-              <div style={{ marginRight: "4px" }}>No account?</div>
-              <Link to={RouteNames.REGISTER}>Register</Link>
+            </FormGroup>
+            <div className="mt-3 d-flex justify-content-between">
+              <div className="d-flex align-items-center">
+                <div style={{ marginRight: "4px" }}>No account?</div>
+                <Link to={RouteNames.REGISTER}>Register</Link>
+              </div>
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
             </div>
-            <Button type="primary" htmlType="submit">
-              Login
-            </Button>
-          </div>
-        </Form>
-      </Card>
+          </Form>
+        </Card>
+      </Spin>
     </Container>
   );
 };

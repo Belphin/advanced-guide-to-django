@@ -1,2 +1,4 @@
 import auth from "./auth";
-export default { auth };
+import boards from "./boards";
+
+export default { auth, boards };
