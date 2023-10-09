@@ -23,3 +23,28 @@ export const GET_BOARDS = gql`
     }
   }
 `;
+
+export const GET_TOPICS = gql`
+  query ($page: Int, $perPage: Int, $boardName: String) {
+    topics(page: $page, perPage: $perPage, boardName: $boardName) {
+      items {
+        id
+        subject
+        postsCount
+        lastUpdated
+        views
+        starter {
+          id
+          email
+        }
+        board {
+          id
+          name
+          description
+        }
+      }
+      totalPages
+      totalElements
+    }
+  }
+`;
