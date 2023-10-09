@@ -33,12 +33,10 @@ function App() {
   return (
     <>
       <NavBar />
-      <div id="app-wrapper">
-        <Container>
-          <AppBreadcrumbs />
-          <AppRouter />
-        </Container>
-      </div>
+      <Container className="pt-3 pb-3">
+        <AppBreadcrumbs />
+        <AppRouter />
+      </Container>
     </>
   );
 }

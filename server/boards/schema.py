@@ -39,7 +39,7 @@ class Query:
 
     def resolve_boards(self, info, page=None, per_page=None):
         try:
-            queryset = Board.objects.annotate(topics_count=Count('topics'))
+            queryset = Board.objects.annotate(topics_count=Count("topics")).order_by("id")
 
             paginator = Paginator(queryset, per_page) if per_page else None
 

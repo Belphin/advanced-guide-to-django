@@ -87,9 +87,11 @@ const Boards: FC = () => {
       </Table>
       <Pagination
         showQuickJumper
+        showSizeChanger
         defaultCurrent={page}
         total={boardsData?.boards?.totalPages}
         onChange={onPageChange}
+        pageSize={perPage}
       />
     </>
   );
