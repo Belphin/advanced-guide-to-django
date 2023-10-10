@@ -12,6 +12,7 @@ const AppBreadcrumbs: FC = () => {
   const router = useNavigate();
 
   const boardName = parts[1];
+  const topicName = parts[2];
 
   if (excludedRoutes.includes(pathname)) return null;
 
@@ -28,6 +29,13 @@ const AppBreadcrumbs: FC = () => {
             active={parts.length === 2}
             onClick={goToRoute(boardName, router)}>
             {boardName}
+          </Breadcrumb.Item>
+        )}
+        {topicName && (
+          <Breadcrumb.Item
+            active={parts.length === 3}
+            onClick={goToRoute(topicName, router)}>
+            {topicName}
           </Breadcrumb.Item>
         )}
       </Breadcrumb>

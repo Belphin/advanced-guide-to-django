@@ -46,11 +46,12 @@ const Topics: FC = () => {
 
   if (topicssError?.message) {
     errorMessage(topicssError.message);
+    return <div className="text-center text-muted">{topicssError.message}</div>;
   }
 
   return (
     <>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead className="table-dark">
           <tr>
             <th>Topic</th>
@@ -64,12 +65,7 @@ const Topics: FC = () => {
           {topicsData?.topics?.items?.map((topic: ITopic) => (
             <tr key={topic.id}>
               <td>
-                <a
-                  href="#"
-                  onClick={goToRoute(
-                    `${topic.board.name}/${topic.subject}`,
-                    router
-                  )}>
+                <a href="#" onClick={goToRoute(topic.subject, router)}>
                   {topic.subject}
                 </a>
                 <small className="text-muted d-block">
@@ -79,19 +75,28 @@ const Topics: FC = () => {
               <td className="align-middle">{topic.starter.email}</td>
               <td className="align-middle">{topic.postsCount}</td>
               <td className="align-middle">{topic.views}</td>
-              <td className="align-middle">{topic.lastUpdated}</td>
+              <td className="align-middle">
+                <small className="text-muted">
+                  <em>{topic.lastUpdated}</em>
+                </small>
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <Pagination
-        showQuickJumper
-        showSizeChanger
-        defaultCurrent={page}
-        total={topicsData?.topics?.totalPages}
-        onChange={onPageChange}
-        pageSize={perPage}
-      />
+      {topicsData?.topics?.items?.length === 0 && (
+        <div className="text-center text-muted">Topics not found!</div>
+      )}
+      {topicsData?.topics?.items?.length !== 0 && (
+        <Pagination
+          showQuickJumper
+          showSizeChanger
+          defaultCurrent={page}
+          total={topicsData?.topics?.totalPages}
+          onChange={onPageChange}
+          pageSize={perPage}
+        />
+      )}
     </>
   );
 };

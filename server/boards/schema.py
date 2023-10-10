@@ -8,14 +8,30 @@ from graphql import GraphQLError
 from .models import Board, Topic, Post
 
 
+class PostType(DjangoObjectType):
+    class Meta:
+        model = Post
+
+
+class TopicType(DjangoObjectType):
+    posts_count = graphene.Int()
+
+    class Meta:
+        model = Topic
+        fields = ("id", "subject", "last_updated", "board", "starter", "views", "posts_count")
+
+
 class BoardType(DjangoObjectType):
-    topicsCount = graphene.Int()
+    topics_count = graphene.Int()
+    posts_count = graphene.Int()
+    latest_post = graphene.Field(PostType)
 
     class Meta:
         model = Board
-        
-    def resolve_topicsCount(self, info):
-        return self.topics_count
+        fields = ("id", "name", "description", "topics_count", "posts_count", "latest_post")
+
+    def resolve_latest_post(self, info):
+        return self.get_latest_post()
 
 
 class BoardListType(graphene.ObjectType):
@@ -24,25 +40,10 @@ class BoardListType(graphene.ObjectType):
     total_pages = graphene.Int()
 
 
-class TopicType(DjangoObjectType):
-    postsCount = graphene.Int()
-
-    class Meta:
-        model = Topic
-
-    def resolve_postsCount(self, info):
-        return self.posts_count
-
-
 class TopicListType(graphene.ObjectType):
     items = graphene.List(TopicType)
     total_elements = graphene.Int()
     total_pages = graphene.Int()
-
-
-class PostType(DjangoObjectType):
-    class Meta:
-        model = Post
 
 
 class Query:
@@ -53,7 +54,7 @@ class Query:
 
     def resolve_boards(self, info, page=None, per_page=None):
         try:
-            queryset = Board.objects.annotate(topics_count=Count("topics")).order_by("id")
+            queryset = Board.objects.order_by("id")
 
             paginator = Paginator(queryset, per_page) if per_page else None
 
@@ -73,10 +74,9 @@ class Query:
     def resolve_topics(self, info, page=None, per_page=None, board_name=None):
         try:
             if board_name:
-                board = Board.objects.get(name=board_name)
-                queryset = board.topics.annotate(posts_count=Count("posts")).order_by("id")
+                queryset = Board.objects.get(name=board_name).topics.order_by("id")
             else:
-                queryset = Topic.objects.annotate(posts_count=Count("posts")).order_by("id")
+                queryset = Topic.objects.order_by("id")
     
             paginator = Paginator(queryset, per_page) if per_page else None
     

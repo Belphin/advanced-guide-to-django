@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count
 from accounts.models import User
 from django.utils.text import Truncator
 from django.utils.html import mark_safe
@@ -11,6 +12,20 @@ class Board(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def topics_count(self):
+        return self.topics.count()
+
+    @property
+    def posts_count(self):
+        return self.topics.aggregate(posts_count=Count('posts'))['posts_count']
+
+    def get_latest_post(self):
+        latest_topic = self.topics.order_by('-last_updated').first()
+        if latest_topic:
+            return latest_topic.posts.order_by('-created_at').first()
+        return None
+
 
 class Topic(models.Model):
     subject = models.CharField(max_length=255)
@@ -21,6 +36,10 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.subject
+
+    @property
+    def posts_count(self):
+        return self.posts.count()
 
 
 class Post(models.Model):

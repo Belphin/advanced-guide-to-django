@@ -17,6 +17,11 @@ export const GET_BOARDS = gql`
         name
         description
         topicsCount
+        postsCount
+        latestPost {
+          id
+          createdAt
+        }
       }
       totalPages
       totalElements

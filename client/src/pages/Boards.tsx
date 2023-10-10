@@ -40,11 +40,12 @@ const Boards: FC = () => {
 
   if (boardsError?.message) {
     errorMessage(boardsError.message);
+    return <div className="text-center text-muted">{boardsError.message}</div>;
   }
 
   return (
     <>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead className="table-dark">
           <tr>
             <th>Board</th>
@@ -64,35 +65,34 @@ const Boards: FC = () => {
                   {board.description}
                 </small>
               </td>
-              <td className="align-middle">{0}</td>
+              <td className="align-middle">{board.postsCount}</td>
               <td className="align-middle">{board.topicsCount}</td>
               <td className="align-middle">
-                {/* {board.get_last_post ? (
-							<small>
-								<a
-									href={`/topic_posts/${board.pk}/${board.get_last_post.topic.pk}`}>
-									By {board.get_last_post.created_by.username} at{" "}
-									{board.get_last_post.created_at}
-								</a>
-							</small>
-						) : ( */}
                 <small className="text-muted">
-                  <em>No posts yet.</em>
+                  <em>
+                    {board?.latestPost
+                      ? board?.latestPost.createdAt
+                      : "No posts yet."}
+                  </em>
                 </small>
-                {/* )} */}
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <Pagination
-        showQuickJumper
-        showSizeChanger
-        defaultCurrent={page}
-        total={boardsData?.boards?.totalPages}
-        onChange={onPageChange}
-        pageSize={perPage}
-      />
+      {boardsData?.boards?.items?.length === 0 && (
+        <div className="text-center text-muted">Boards not found!</div>
+      )}
+      {boardsData?.boards?.items?.length !== 0 && (
+        <Pagination
+          showQuickJumper
+          showSizeChanger
+          defaultCurrent={page}
+          total={boardsData?.boards?.totalPages}
+          onChange={onPageChange}
+          pageSize={perPage}
+        />
+      )}
     </>
   );
 };
