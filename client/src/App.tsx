@@ -6,7 +6,6 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import NavBar from "components/NavBar";
 import { useActions } from "hooks/useActions";
 import "./styles.css";
-import AppBreadcrumbs from "components/AppBreadcrumbs";
 import { Container } from "react-bootstrap";
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
     <>
       <NavBar />
       <Container className="pt-3 pb-3">
-        <AppBreadcrumbs />
         <AppRouter />
       </Container>
     </>

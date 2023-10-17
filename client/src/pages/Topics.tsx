@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { Pagination, PaginationProps, Spin } from "antd";
 import { GET_TOPICS } from "api/queries";
@@ -8,7 +8,7 @@ import { ITopic } from "models/ITopic";
 import { Table } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { goToRoute } from "utils/goToRoute";
-import { errorMessage } from "utils/messages";
+import AppBreadcrumbs from "components/AppBreadcrumbs";
 
 const Topics: FC = () => {
   const router = useNavigate();
@@ -18,7 +18,7 @@ const Topics: FC = () => {
   const { setTopicsPage, setTopicsPrePage } = useActions();
 
   const parts = pathname.split("/");
-  const boardName = parts[1];
+  const boardId = +parts[1];
 
   const {
     loading: topicsLoading,
@@ -28,7 +28,7 @@ const Topics: FC = () => {
     variables: {
       page,
       perPage,
-      boardName,
+      boardId,
     },
   });
 
@@ -36,6 +36,12 @@ const Topics: FC = () => {
     setTopicsPage(pageNumber);
     setTopicsPrePage(pageSize);
   };
+
+  useEffect(() => {
+    if (topicsData?.topics?.totalPages < page) {
+      setTopicsPage(1);
+    }
+  }, [topicsData]);
 
   if (topicsLoading)
     return (
@@ -45,12 +51,12 @@ const Topics: FC = () => {
     );
 
   if (topicssError?.message) {
-    errorMessage(topicssError.message);
     return <div className="text-center text-muted">{topicssError.message}</div>;
   }
 
   return (
     <>
+      <AppBreadcrumbs boardName={topicsData?.topics?.boardName} />
       <Table striped bordered hover responsive>
         <thead className="table-dark">
           <tr>
@@ -65,14 +71,11 @@ const Topics: FC = () => {
           {topicsData?.topics?.items?.map((topic: ITopic) => (
             <tr key={topic.id}>
               <td>
-                <a href="#" onClick={goToRoute(topic.subject, router)}>
+                <a href="#" onClick={goToRoute(topic.id, router)}>
                   {topic.subject}
                 </a>
-                <small className="text-muted d-block">
-                  {topic.board.description}
-                </small>
               </td>
-              <td className="align-middle">{topic.starter.email}</td>
+              <td className="align-middle">{topic.starter?.email}</td>
               <td className="align-middle">{topic.postsCount}</td>
               <td className="align-middle">{topic.views}</td>
               <td className="align-middle">
@@ -87,12 +90,12 @@ const Topics: FC = () => {
       {topicsData?.topics?.items?.length === 0 && (
         <div className="text-center text-muted">Topics not found!</div>
       )}
-      {topicsData?.topics?.items?.length !== 0 && (
+      {topicsData?.topics?.totalPages > 1 && (
         <Pagination
           showQuickJumper
           showSizeChanger
           defaultCurrent={page}
-          total={topicsData?.topics?.totalPages}
+          total={topicsData?.topics?.totalElements}
           onChange={onPageChange}
           pageSize={perPage}
         />

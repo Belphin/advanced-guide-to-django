@@ -30,8 +30,8 @@ export const GET_BOARDS = gql`
 `;
 
 export const GET_TOPICS = gql`
-  query ($page: Int, $perPage: Int, $boardName: String) {
-    topics(page: $page, perPage: $perPage, boardName: $boardName) {
+  query ($page: Int, $perPage: Int, $boardId: Int) {
+    topics(page: $page, perPage: $perPage, boardId: $boardId) {
       items {
         id
         subject
@@ -45,11 +45,36 @@ export const GET_TOPICS = gql`
         board {
           id
           name
-          description
         }
       }
       totalPages
       totalElements
+      boardName
+    }
+  }
+`;
+
+export const GET_POSTS = gql`
+  query ($page: Int, $perPage: Int, $topicId: Int) {
+    posts(page: $page, perPage: $perPage, topicId: $topicId) {
+      items {
+        id
+        message
+        createdBy {
+          id
+          email
+        }
+        createdAt
+      }
+      totalPages
+      totalElements
+      topic {
+        subject
+        board {
+          id
+          name
+        }
+      }
     }
   }
 `;

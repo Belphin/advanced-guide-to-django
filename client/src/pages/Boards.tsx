@@ -9,6 +9,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { useActions } from "hooks/useActions";
 import { useNavigate } from "react-router-dom";
 import { goToRoute } from "utils/goToRoute";
+import AppBreadcrumbs from "components/AppBreadcrumbs";
 
 const Boards: FC = () => {
   const router = useNavigate();
@@ -45,6 +46,7 @@ const Boards: FC = () => {
 
   return (
     <>
+      <AppBreadcrumbs />
       <Table striped bordered hover responsive>
         <thead className="table-dark">
           <tr>
@@ -58,7 +60,7 @@ const Boards: FC = () => {
           {boardsData?.boards?.items?.map((board: IBoard) => (
             <tr key={board.id}>
               <td>
-                <a href="#" onClick={goToRoute(board.name, router)}>
+                <a href="#" onClick={goToRoute(board.id, router)}>
                   {board.name}
                 </a>
                 <small className="text-muted d-block">
@@ -83,12 +85,12 @@ const Boards: FC = () => {
       {boardsData?.boards?.items?.length === 0 && (
         <div className="text-center text-muted">Boards not found!</div>
       )}
-      {boardsData?.boards?.items?.length !== 0 && (
+      {boardsData?.boards?.totalPages > 1 && (
         <Pagination
           showQuickJumper
           showSizeChanger
           defaultCurrent={page}
-          total={boardsData?.boards?.totalPages}
+          total={boardsData?.boards?.totalElements}
           onChange={onPageChange}
           pageSize={perPage}
         />
